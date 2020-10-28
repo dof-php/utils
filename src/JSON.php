@@ -17,11 +17,11 @@ final class JSON
 
         $json = \json_encode($data, $option, $depth);
 
-        if (json_last_error() === JSON_ERROR_NONE) {
+        if (\json_last_error() === JSON_ERROR_NONE) {
             return $json;
         }
 
-        $error = json_last_error_msg() ?: 'UnknownJsonEncodeError';
+        $error = \json_last_error_msg() ?: 'UnknownJsonEncodeError';
 
         throw new FormatExceptor('JSON_ENCODE_ERROR', \compact('error'));
     }
@@ -30,7 +30,7 @@ final class JSON
     {
         if ($file) {
             $file = $json;
-            if (!\is_file($file)) {
+            if (! \is_file($file)) {
                 throw new FormatExceptor('JSON_DECODE_FAILED', [
                     'info' => 'JsonFileNotExists',
                     'file' => $file,
