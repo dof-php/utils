@@ -108,6 +108,10 @@ class Annotation
         $result = [];
 
         foreach ($list as $item) {
+            if (\is_array($item)) {
+                Annotation::parseMixed($item, $callback, $origin);
+                continue;
+            }
             if (! \is_string($item)) {
                 continue;
             }
