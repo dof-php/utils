@@ -13,7 +13,7 @@ use DOF\Util\Exceptor;
  */
 abstract class Surrogate
 {
-    private static $__pool;
+    private static $__POOL__;
 
     final public static function __callStatic(string $method, array $params = [])
     {
@@ -25,18 +25,18 @@ abstract class Surrogate
         $namespace = static::namespace();
 
         if ($instance && ($instance instanceof $namespace)) {
-            return self::$__pool[$namespace] = $instance;
+            return self::$__POOL__[$namespace] = $instance;
         }
 
         if (! static::singleton()) {
             return static::new();
         }
 
-        if ($instance = (self::$__pool[$namespace] ?? null)) {
+        if ($instance = (self::$__POOL__[$namespace] ?? null)) {
             return $instance;
         }
 
-        return self::$__pool[$namespace] = static::new();
+        return self::$__POOL__[$namespace] = static::new();
     }
 
     abstract public static function namespace() : string;
