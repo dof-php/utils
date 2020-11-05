@@ -8,9 +8,42 @@ use DOF\Util\IS;
 use DOF\Util\FS;
 use DOF\Util\Rand;
 use DOF\Util\JSON;
+use DOF\Util\Format;
+use DOF\Util\TypeCast;
 
 class Command
 {
+    /**
+     * @CMD(t2d)
+     * @Desc(Convert UNIX timestamp to human readable date string)
+     * @Argv(1){notes=Timestamp to convert}
+     */
+    public function timestamp2date($console)
+    {
+        if (! ($ts = $console->first())) {
+            return $console->fail('MissingTimestampToConvert');
+        }
+        if (! IS::timestamp($ts)) {
+            return $console->fail('InvalidTimestamp', \compact('ts'));
+        }
+
+        $console->line(Format::timestamp(TypeCast::int($ts)));
+    }
+
+    /**
+     * @CMD(d2t)
+     * @Desc(Convert date string to UNIX timestamp)
+     * @Argv(1){notes=Date string to convert}
+     */
+    public function date2timestamp($console)
+    {
+        if (! ($date = $console->first())) {
+            return $console->fail('MissingDateToConvert');
+        }
+
+        $console->line(\strtotime($date));
+    }
+
     /**
      * @CMD(ns)
      * @Desc(Get namespace of php file, or get php filepath of namespace)
