@@ -32,9 +32,14 @@ $gwt->unit('\DOF\Util\Str::wrap()', function ($t) {
 $gwt->false('Test two strings are equal: cs', function ($tester) {
     return \DOF\Util\Str::eq('sss', 'SSS', false);
 });
-
 $gwt->true('Test two strings are equal: ci', function ($tester) {
     return \DOF\Util\Str::eq('sss', 'SSS', true);
+});
+$gwt->true('Test two strings are equal: ci+trim #1', function ($tester) {
+    return \DOF\Util\Str::eq(' sss', 'SSS   ', true, true);
+});
+$gwt->false('Test two strings are equal: ci+trim #2', function ($tester) {
+    return \DOF\Util\Str::eq(' sss', 'SSS   ', true, false);
 });
 
 $gwt->eq('Test \DOF\Util\Str::arr(): #1', function ($tester) {

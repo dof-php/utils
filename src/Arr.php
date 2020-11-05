@@ -128,15 +128,25 @@ class Arr
      * @param array $compare
      * @param array $to
      * @param bool $withOrder
+     * @param bool $trim
      * @return bool
      */
-    public static function eq(array $compare, array $to, bool $withOrder = true) : bool
+    public static function eq(array $compare, array $to, bool $withOrder = true, bool $trim = false) : bool
     {
-        return static::equal($compare, $to, $withOrder);
+        return static::equal($compare, $to, $withOrder, $trim);
     }
 
-    public static function equal(array $compare, array $to, bool $withOrder = true) : bool
+    public static function equal(array $compare, array $to, bool $withOrder = true, bool $trim = false) : bool
     {
+        if ($trim) {
+            $compare = \array_filter($compare, function ($val) {
+                return !IS::empty($val);
+            });
+            $to = \array_filter($to, function ($val) {
+                return !IS::empty($val);
+            });
+        }
+
         if ($withOrder) {
             return $compare === $to;
         }

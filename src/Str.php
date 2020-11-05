@@ -257,12 +257,12 @@ class Str
         );
     }
 
-    public static function eq($v1, $v2, bool $ci = false) : bool
+    public static function eq($v1, $v2, bool $ci = false, bool $trim = false) : bool
     {
-        return static::equal($v1, $v2, $ci);
+        return static::equal($v1, $v2, $ci, $trim);
     }
 
-    public static function equal($v1, $v2, bool $ci = false) : bool
+    public static function equal($v1, $v2, bool $ci = false, bool $trim = false) : bool
     {
         if ((! \is_string($v1)) && (! \is_numeric($v1))) {
             return false;
@@ -271,11 +271,19 @@ class Str
             return false;
         }
 
+        $v1 = \strval($v1);
+        $v2 = \strval($v2);
+
+        if ($trim) {
+            $v1 = \trim($v1);
+            $v2 = \trim($v2);
+        }
         if ($ci) {
-            return \strtolower(\strval($v1)) === \strtolower(\strval($v2));
+            $v1 = \strtolower($v1);
+            $v2 = \strtolower($v2);
         }
 
-        return \strval($v1) === \strval($v2);
+        return $v1 === $v2;
     }
 
     public static function arr(string $str, string $explode = ',', bool $trim = true) : array

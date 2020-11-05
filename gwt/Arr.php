@@ -266,4 +266,5 @@ $gwt->unit('Test \DOF\Util\Arr::eq()', function ($t) {
     $t->true(\DOF\Util\Arr::eq(['aa' => '11', 'bb' => '22'], ['bb' => '22', 'aa' => '11'], false));
     $t->false(\DOF\Util\Arr::eq(['aa' => '11', 'bb' => '22'], ['bb' => '22', 'aa' => '11']));
     $t->true(\DOF\Util\Arr::eq(['aa', 'bb'], ['bb', 'aa'], false));
+    $t->true(\DOF\Util\Arr::eq(['aa', 'bb', '', null], ['bb', 'aa'], false, true));
 });
