@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DOF\Util\DSL;
 
-use Exception;
+use DOF\Util\Exceptor\IFRSNExceptor;
 
 /**
  * IFRSN: Input Fields Relation Structured Notation
@@ -55,7 +55,7 @@ final class IFRSN
         $leftCnt  = \count($bracesLeft);
         $rightCnt = \count($bracesRight);
         if ($leftCnt !== $rightCnt) {
-            throw new Exceptor('INPUT_FIELDS_PARAMETER_GRAMMER_ERROR', [
+            throw new IFRSNExceptor('INPUT_FIELDS_PARAMETER_GRAMMER_ERROR', [
                 'error' => 'INPUT_BRACES_MISMATCH',
                 'parameter' => $parameter,
                 'count' => [
@@ -96,7 +96,7 @@ final class IFRSN
         $leftCnt  = \count($parenthesesLeft);
         $rightCnt = \count($parenthesesRight);
         if ($leftCnt !== $rightCnt) {
-            throw new Exceptor('INPUT_FIELDS_SENTENCE_GRAMMER_ERROR', [
+            throw new IFRSNExceptor('INPUT_FIELDS_SENTENCE_GRAMMER_ERROR', [
                 'error' => 'INPUT_PARENTHESES_MISMATCH',
                 'sentecne' => $sentence,
                 'count' => [
@@ -248,6 +248,28 @@ final class IFRSN
         return $result;
     }
 
+    public static function cyclicReferenceCheck(array $refs)
+    {
+        // first
+        foreach ($refs as $name => $item) {
+            if ($_refs = ($item['refs'] ?? [])) {
+                // second/middle
+                foreach ($_refs as $_name => $_item) {
+                    if ($__refs = ($_item['refs'] ?? [])) {
+                        // third/last
+                        foreach ($__refs as $__name => $__item) {
+                            if (\strtolower($name) === \strtolower($__name)) {
+                                throw new IFRSNExceptor('CYCLIC_REFERENCE_FOUND', ['cyclic' => "{$name}.{$_name}.{$__name}"]);
+                            }
+                        }
+                        self::cyclicReferenceCheck($__refs);
+                    }
+                }
+                self::cyclicReferenceCheck($_refs);
+            }
+        }
+    }
+
     public static function parseSentenceContent(string $content) : ?array
     {
         $content = \trim($content);
@@ -272,6 +294,8 @@ final class IFRSN
             }
             list($name, $item)  = $kv;
             $res['refs'][$name] = IFRSN::parseSentenceContent($item);
+
+            self::cyclicReferenceCheck($res['refs']);
         }
 
         $fieldStr = \join('', $charArray);
@@ -322,7 +346,7 @@ final class IFRSN
         $idxReplaceStart  = $idxStart - $keyLen;
         $idxReplaceLength = $idxEnd - $idxStart + $keyLen + 1;
         $arrReplace = \array_fill($idxReplaceStart, $idxReplaceLength, '');
-        $contentArr = array_replace($contentArr, $arrReplace);
+        $contentArr = \array_replace($contentArr, $arrReplace);
 
         return [$key, $val];
     }
