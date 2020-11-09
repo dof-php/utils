@@ -118,7 +118,7 @@ final class FS
                 return;
             }
             if ($path->isDir()) {
-                FS::walkr($path->getRealpath(), $callback, true);
+                FS::walkr($path->getRealpath(), $callback);
                 return;
             }
 
