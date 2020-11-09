@@ -14,6 +14,66 @@ use DOF\Util\TypeCast;
 class Command
 {
     /**
+     * @CMD(url.e)
+     * @Desc(Encode origin URL stirng to encoded URL format)
+     * @Option(raw){notes=Use `rawurlencode` instead of `urlencode`}
+     * @Argv(1){notes=Origin URL to encode}
+     */
+    public function urlencode($console)
+    {
+        if (! ($str = $console->first())) {
+            return $console->fail('MissingURLStringToEncode');
+        }
+
+        $console->line($console->hasOption('raw') ? \rawurlencode($str) : \urlencode($str));
+    }
+
+    /**
+     * @CMD(url.d)
+     * @Desc(Decode encoded URL to origin URL)
+     * @Option(raw){notes=Use `rawurldecode` instead of `urldecode`}
+     * @Argv(1){notes=URL encoded string to decode}
+     */
+    public function urldecode($console)
+    {
+        if (! ($str = $console->first())) {
+            return $console->fail('MissingURLStringToDecode');
+        }
+
+        $console->line($console->hasOption('raw') ? \rawurldecode($str) : \urldecode($str));
+    }
+
+    /**
+     * @CMD(bse)
+     * @Desc(Encode string base64 format)
+     * @Option(urlsafe){notes=Encode base64 string in URL safe mode&default=false}
+     * @Argv(1){notes=Origin string to encode}
+     */
+    public function base64encode($console)
+    {
+        if (! ($str = $console->first())) {
+            return $console->fail('MissingBase64StringToEncode');
+        }
+
+        $console->line(Format::enbase64($str, $console->hasOption('urlsafe')));
+    }
+
+    /**
+     * @CMD(bsd)
+     * @Desc(Decode base64 string)
+     * @Option(urlsafe){notes=Decode base64 string in URL safe mode&default=false}
+     * @Argv(1){notes=Base64 string to decode}
+     */
+    public function base64decode($console)
+    {
+        if (! ($bs = $console->first())) {
+            return $console->fail('MissingBase64StringToDecode');
+        }
+
+        $console->line(Format::debase64($bs, $console->hasOption('urlsafe')));
+    }
+
+    /**
      * @CMD(t2d)
      * @Desc(Convert UNIX timestamp to human readable date string)
      * @Argv(1){notes=Timestamp to convert}
